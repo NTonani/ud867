@@ -12,6 +12,9 @@ buildscript {
 
         //For compile time annotations
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+
+        // Butterknife Annotations
+        classpath 'com.jakewharton:butterknife-gradle-plugin:8.5.1'
     }
 }
 

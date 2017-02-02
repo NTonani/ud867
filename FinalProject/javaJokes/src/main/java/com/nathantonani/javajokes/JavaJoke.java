@@ -1,4 +1,4 @@
-package com.nathantonani;
+package com.nathantonani.javajokes;
 
 /**
  * Created by ntonani on 1/30/17.
