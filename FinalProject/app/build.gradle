@@ -38,12 +38,16 @@ dependencies {
     // Android Jokes Library
     compile project(':androidJokes')
 
-    compile 'com.android.support:appcompat-v7:25.1.1'
-
     // Ads
     compile 'com.google.android.gms:play-services-ads:10.0.1'
 
     // GCE Jokes
-    compile 'com.google.code.findbugs:jsr305:2.0.1'
     compile project(path: ':gceJokes', configuration: 'android-endpoints')
+    compile 'com.google.code.findbugs:jsr305:2.0.1'
+
+    compile 'com.android.support:appcompat-v7:25.1.1'
+
+
+
+
 }

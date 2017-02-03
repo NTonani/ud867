@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.nathantonani.javajokes.JavaJoke;
-import com.ntonani.gcejokes.myApi.MyApi;
+import com.nathantonani.gcejokes.myApi.MyApi;
 
 import java.io.IOException;
 
