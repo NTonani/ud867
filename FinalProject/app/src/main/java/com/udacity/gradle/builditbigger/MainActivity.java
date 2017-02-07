@@ -1,6 +1,7 @@
 package com.udacity.gradle.builditbigger;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.util.Pair;
@@ -8,17 +9,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
+import com.nathantonani.androidjokes.AndroidJokeActivity;
 import com.nathantonani.gcejokes.jokesApi.JokesApi;
-import com.nathantonani.javajokes.JavaJoke;
 
 import java.io.IOException;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements EndpointsAsyncTask.OnTaskComplete{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,17 +50,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void tellJoke(View view) {
-        JavaJoke joke = new JavaJoke();
-        //Intent intent = new Intent(this, AndroidJokeActivity.class);
-        //intent.putExtra("JOKE_EXTRA",joke.tellJoke());
-        //startActivity(intent);
-        new EndpointsAsyncTask().execute(new Pair<Context, String>(this,"Nathan"));
+        new EndpointsAsyncTask(this).execute(new Pair<Context, String>(this,"Nathan"));
+    }
+
+    @Override
+    public void onTaskComplete(String joke){
+        Intent intent = new Intent(this, AndroidJokeActivity.class);
+        intent.putExtra("JOKE_EXTRA",joke);
+        startActivity(intent);
     }
 }
 
 class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
     private static JokesApi myApiService = null;
     private Context context;
+    private OnTaskComplete listener;
+
+    public EndpointsAsyncTask(OnTaskComplete listener){
+        this.listener = listener;
+    }
 
     @Override
     protected String doInBackground(Pair<Context, String>... params) {
@@ -97,6 +105,10 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> 
 
     @Override
     protected void onPostExecute(String result) {
-        Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+        listener.onTaskComplete(result);
+    }
+
+    public interface OnTaskComplete {
+        void onTaskComplete(String joke);
     }
 }
