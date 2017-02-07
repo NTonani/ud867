@@ -14,6 +14,17 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    productFlavors {
+        free{
+            applicationId "com.udacity.gradle.builditbigger.free"
+            buildConfigField "boolean","IS_PAID","false"
+        }
+        paid{
+            applicationId "com.udacity.gradle.builditbigger.paid"
+            buildConfigField "boolean","IS_PAID","true"
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -39,7 +50,7 @@ dependencies {
     compile project(':androidJokes')
 
     // Ads
-    compile 'com.google.android.gms:play-services-ads:10.0.1'
+    freeCompile 'com.google.android.gms:play-services-ads:10.0.1'
 
     // GCE Jokes
     compile project(path: ':gceJokes', configuration: 'android-endpoints')
