@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -50,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements EndpointsAsyncTas
     }
 
     public void tellJoke(View view) {
-        new EndpointsAsyncTask(this).execute(new Pair<Context, String>(this,"Nathan"));
+        new EndpointsAsyncTask(this).execute();
     }
 
     @Override
@@ -61,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements EndpointsAsyncTas
     }
 }
 
-class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
+class EndpointsAsyncTask extends AsyncTask<Void,Void,String> {
     private static JokesApi myApiService = null;
     private Context context;
     private OnTaskComplete listener;
@@ -71,7 +70,7 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> 
     }
 
     @Override
-    protected String doInBackground(Pair<Context, String>... params) {
+    protected String doInBackground(Void... voids) {
         if(myApiService == null) {  // Only do this once
             JokesApi.Builder builder = new JokesApi.Builder(AndroidHttp.newCompatibleTransport(),
                     new AndroidJsonFactory(), null)
@@ -92,9 +91,6 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> 
 
             myApiService = builder.build();
         }
-
-        context = params[0].first;
-        String name = params[0].second;
 
         try {
             return myApiService.tellJoke().execute().getData();
