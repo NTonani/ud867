@@ -93,7 +93,7 @@ class EndpointsAsyncTask extends AsyncTask<Void,Void,String> {
         }
 
         try {
-            return myApiService.tellJoke().execute().getData();
+            return myApiService.tellJoke(BuildConfig.IS_PAID).execute().getData();
         } catch (IOException e) {
             return e.getMessage();
         }

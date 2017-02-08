@@ -9,6 +9,7 @@ package com.nathantonani.gcejokes;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
+import com.google.api.server.spi.config.Named;
 import com.nathantonani.javajokes.JavaJoke;
 
 /**
@@ -29,8 +30,8 @@ public class MyEndpoint {
      * A simple endpoint method that takes a name and says Hi back
      */
     @ApiMethod(name = "tellJoke")
-    public MyBean tellJoke() {
-        JavaJoke joke = new JavaJoke();
+    public MyBean tellJoke(@Named("isPaid") boolean isPaid) {
+        JavaJoke joke = new JavaJoke(isPaid);
         MyBean response = new MyBean();
         response.setData(joke.tellJoke());
         return response;

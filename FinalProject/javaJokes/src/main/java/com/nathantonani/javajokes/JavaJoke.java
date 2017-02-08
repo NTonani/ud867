@@ -5,7 +5,22 @@ package com.nathantonani.javajokes;
  */
 
 public class JavaJoke {
+    private static final String FREE_JOKE = "This is a funny joke";
+    private static final String PAID_JOKE = "This is a hilarious joke!";
+
+    private boolean mIsPaid;
+
+    public JavaJoke(boolean isPaid){
+        mIsPaid = isPaid;
+    }
+
+    /*
+     * Return joke based on product flavor
+     */
+
     public String tellJoke(){
-        return "This is a Java Joke!";
+        return mIsPaid ?
+                PAID_JOKE :
+                FREE_JOKE;
     }
 }
