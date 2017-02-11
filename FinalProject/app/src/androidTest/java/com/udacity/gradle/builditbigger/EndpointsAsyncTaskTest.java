@@ -16,7 +16,8 @@ import static org.junit.Assert.assertEquals;
 @RunWith(AndroidJUnit4.class)
 public class EndpointsAsyncTaskTest {
 
-    private final static String EXPECTED_JOKE = "This is a Java Joke!";
+    private static final String EXPECTED_FREE_JOKE = "This is a funny joke";
+    private static final String EXPECTED_PAID_JOKE = "This is a hilarious joke!";
 
     private CountDownLatch mSignal;
     private String mJoke;
@@ -41,6 +42,7 @@ public class EndpointsAsyncTaskTest {
         mSignal.await();
 
         assertNotNull(mJoke);
-        assertEquals(EXPECTED_JOKE,mJoke);
+        if(BuildConfig.IS_PAID) assertEquals(EXPECTED_PAID_JOKE,mJoke);
+        else assertEquals(EXPECTED_FREE_JOKE,mJoke);
     }
 }

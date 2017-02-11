@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,7 +50,11 @@ public class MainActivity extends AppCompatActivity implements EndpointsAsyncTas
     }
 
     public void tellJoke(View view) {
-        new EndpointsAsyncTask(this).execute();
+        // Inform receivers of joke request
+        if(!BuildConfig.IS_PAID) {
+            Intent requestingJokeIntent = new Intent(getString(R.string.requesting_joke));
+            LocalBroadcastManager.getInstance(this).sendBroadcast(requestingJokeIntent);
+        }else new EndpointsAsyncTask(this).execute();
     }
 
     @Override

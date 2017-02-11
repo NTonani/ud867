@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 
 /**
- * A placeholder fragment containing a simple view.
+ * Paid flavor fragment - basic
  */
 public class MainActivityFragment extends Fragment {
 
