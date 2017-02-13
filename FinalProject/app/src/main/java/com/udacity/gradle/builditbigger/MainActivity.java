@@ -12,13 +12,12 @@ import android.view.View;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
-import com.nathantonani.androidjokes.AndroidJokeActivity;
 import com.nathantonani.gcejokes.jokesApi.JokesApi;
 
 import java.io.IOException;
 
 
-public class MainActivity extends AppCompatActivity implements EndpointsAsyncTask.OnTaskComplete{
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,17 +50,8 @@ public class MainActivity extends AppCompatActivity implements EndpointsAsyncTas
 
     public void tellJoke(View view) {
         // Inform receivers of joke request
-        if(!BuildConfig.IS_PAID) {
-            Intent requestingJokeIntent = new Intent(getString(R.string.requesting_joke));
-            LocalBroadcastManager.getInstance(this).sendBroadcast(requestingJokeIntent);
-        }else new EndpointsAsyncTask(this).execute();
-    }
-
-    @Override
-    public void onTaskComplete(String joke){
-        Intent intent = new Intent(this, AndroidJokeActivity.class);
-        intent.putExtra("JOKE_EXTRA",joke);
-        startActivity(intent);
+        Intent requestingJokeIntent = new Intent(getString(R.string.requesting_joke));
+        LocalBroadcastManager.getInstance(this).sendBroadcast(requestingJokeIntent);
     }
 }
 

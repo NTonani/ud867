@@ -11,6 +11,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -18,12 +19,21 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.nathantonani.androidjokes.AndroidJokeActivity;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 /**
  * Free flavor fragment - contains ad objects
  */
 public class MainActivityFragment extends Fragment implements EndpointsAsyncTask.OnTaskComplete{
     private final static String LOG_TAG = MainActivityFragment.class.getSimpleName();
+
+    @BindView(R.id.jokesProgressBar)
+    ProgressBar mSpinner;
+
+    @BindView(R.id.adView)
+    AdView mAdView;
 
     private InterstitialAd mInterstitialAd;
     private AdRequest mAdRequest;
@@ -37,8 +47,11 @@ public class MainActivityFragment extends Fragment implements EndpointsAsyncTask
 
         View root = inflater.inflate(R.layout.fragment_main, container, false);
 
-        AdView mAdView = (AdView) root.findViewById(R.id.adView);
+        // Bind Butterknife
+        ButterKnife.bind(this,root);
+        mSpinner.setVisibility(View.GONE);
 
+        // Init emulator / dev AdRequest
         mAdRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .build();
@@ -102,12 +115,13 @@ public class MainActivityFragment extends Fragment implements EndpointsAsyncTask
     public void onTaskComplete(String joke) {
         mAndroidIntent = new Intent(getContext(), AndroidJokeActivity.class);
         mAndroidIntent.putExtra("JOKE_EXTRA",joke);
-
+        mSpinner.setVisibility(View.GONE);
         // If no ad displayed or already closed, start activity
         if(!mWaitOnAd) startActivity(mAndroidIntent);
     }
 
     private void requestJoke(){
+        mSpinner.setVisibility(View.VISIBLE);
         new EndpointsAsyncTask(this).execute();
     }
 }
