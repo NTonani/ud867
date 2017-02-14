@@ -24,11 +24,11 @@ import butterknife.ButterKnife;
  */
 public class MainActivityFragment extends Fragment implements EndpointsAsyncTask.OnTaskComplete{
 
-    private Intent mAndroidIntent;
-
     @BindView(R.id.jokesProgressBar)
     ProgressBar mSpinner;
 
+    private Intent mAndroidIntent;
+    private Context mContext;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,6 +46,7 @@ public class MainActivityFragment extends Fragment implements EndpointsAsyncTask
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        mContext = getContext();
 
         // Register new broadcast receiver
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(
@@ -63,10 +64,19 @@ public class MainActivityFragment extends Fragment implements EndpointsAsyncTask
     }
 
     @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        mContext = getContext();
+    }
+
+
+    @Override
     public void onTaskComplete(String joke) {
-        mAndroidIntent = new Intent(getContext(), AndroidJokeActivity.class);
-        mAndroidIntent.putExtra(getString(R.string.joke_extra),joke);
-        startActivity(mAndroidIntent);
+        mAndroidIntent = new Intent(mContext, AndroidJokeActivity.class);
+        mAndroidIntent.putExtra(mContext.getString(R.string.joke_extra),joke);
+        mAndroidIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        mContext.startActivity(mAndroidIntent);
 
         mSpinner.setVisibility(View.GONE);
     }
