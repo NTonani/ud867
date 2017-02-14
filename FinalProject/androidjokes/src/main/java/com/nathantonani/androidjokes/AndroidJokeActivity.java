@@ -2,6 +2,7 @@ package com.nathantonani.androidjokes;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -19,7 +20,22 @@ public class AndroidJokeActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        // Set up button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         String joke = getIntent().getStringExtra(getString(R.string.joke_extra));
         jokeView.setText(joke);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch(item.getItemId()){
+            // Mimic back behavior with Up navigation to return to caller
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

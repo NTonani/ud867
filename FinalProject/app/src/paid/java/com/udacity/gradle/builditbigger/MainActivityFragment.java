@@ -65,7 +65,7 @@ public class MainActivityFragment extends Fragment implements EndpointsAsyncTask
     @Override
     public void onTaskComplete(String joke) {
         mAndroidIntent = new Intent(getContext(), AndroidJokeActivity.class);
-        mAndroidIntent.putExtra("JOKE_EXTRA",joke);
+        mAndroidIntent.putExtra(getString(R.string.joke_extra),joke);
         startActivity(mAndroidIntent);
 
         mSpinner.setVisibility(View.GONE);

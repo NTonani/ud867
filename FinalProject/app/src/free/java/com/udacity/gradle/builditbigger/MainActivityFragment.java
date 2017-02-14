@@ -67,7 +67,7 @@ public class MainActivityFragment extends Fragment implements EndpointsAsyncTask
 
         // Create and load interstitial add
         mInterstitialAd = new InterstitialAd(getContext());
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_ad_unit_id));
 
         // Set listener which unblocks execution of loading activity
         mInterstitialAd.setAdListener(new AdListener() {
@@ -114,7 +114,7 @@ public class MainActivityFragment extends Fragment implements EndpointsAsyncTask
     @Override
     public void onTaskComplete(String joke) {
         mAndroidIntent = new Intent(getContext(), AndroidJokeActivity.class);
-        mAndroidIntent.putExtra("JOKE_EXTRA",joke);
+        mAndroidIntent.putExtra(getString(R.string.joke_extra),joke);
         mSpinner.setVisibility(View.GONE);
         // If no ad displayed or already closed, start activity
         if(!mWaitOnAd) startActivity(mAndroidIntent);
