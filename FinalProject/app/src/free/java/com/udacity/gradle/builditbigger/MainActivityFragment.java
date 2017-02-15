@@ -39,6 +39,8 @@ public class MainActivityFragment extends Fragment implements EndpointsAsyncTask
     private AdRequest mAdRequest;
     private Intent mAndroidIntent;
     private boolean mWaitOnAd;
+    private Context mContext;
+    private BroadcastReceiver mBroadcastReceiver;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,6 +60,23 @@ public class MainActivityFragment extends Fragment implements EndpointsAsyncTask
 
         mAdView.loadAd(mAdRequest);
 
+        // Create receiver
+        mBroadcastReceiver = new BroadcastReceiver() {
+
+            // Init CoundDownLatch object, load interstitial add, request joke
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Request joke from CGE
+                requestJoke();
+
+                // During loading, display interstitial ad
+                if(mInterstitialAd.isLoaded()){
+                    mInterstitialAd.show();
+                    mWaitOnAd = true;
+                }
+            }
+        };
+
         return root;
     }
 
@@ -65,8 +84,11 @@ public class MainActivityFragment extends Fragment implements EndpointsAsyncTask
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        mContext = getContext();
+        mWaitOnAd = false;
+
         // Create and load interstitial add
-        mInterstitialAd = new InterstitialAd(getContext());
+        mInterstitialAd = new InterstitialAd(mContext);
         mInterstitialAd.setAdUnitId(getString(R.string.interstitial_ad_unit_id));
 
         // Set listener which unblocks execution of loading activity
@@ -84,40 +106,35 @@ public class MainActivityFragment extends Fragment implements EndpointsAsyncTask
                 mInterstitialAd.loadAd(mAdRequest);
 
                 // If intent object isn't null, start activity
-                if(mAndroidIntent != null) startActivity(mAndroidIntent);
+                if(mAndroidIntent != null) mContext.startActivity(mAndroidIntent);
             }
         });
 
         mInterstitialAd.loadAd(mAdRequest);
 
-        // Register new broadcast receiver
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(
-                new BroadcastReceiver() {
-
-                    // Init CoundDownLatch object, load interstitial add, request joke
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        // During loading, display interstitial ad
-                        if(mInterstitialAd.isLoaded()){
-                            mInterstitialAd.show();
-                            mWaitOnAd = true;
-                        }
-
-                        // Request joke from CGE
-                        requestJoke();
-
-                    }
-                }, new IntentFilter(getString(R.string.requesting_joke))
+        // Register receiver
+        LocalBroadcastManager.getInstance(mContext).registerReceiver(
+                mBroadcastReceiver, new IntentFilter(getString(R.string.requesting_joke))
         );
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Unregister receiver
+        LocalBroadcastManager.getInstance(mContext).unregisterReceiver(mBroadcastReceiver);
+    }
+
+    @Override
     public void onTaskComplete(String joke) {
-        mAndroidIntent = new Intent(getContext(), AndroidJokeActivity.class);
-        mAndroidIntent.putExtra(getString(R.string.joke_extra),joke);
-        mSpinner.setVisibility(View.GONE);
+        mAndroidIntent = new Intent(mContext, AndroidJokeActivity.class);
+        mAndroidIntent.putExtra(mContext.getString(R.string.joke_extra),joke);
+        mAndroidIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
         // If no ad displayed or already closed, start activity
-        if(!mWaitOnAd) startActivity(mAndroidIntent);
+        if(!mWaitOnAd) mContext.startActivity(mAndroidIntent);
+
+        mSpinner.setVisibility(View.GONE);
     }
 
     private void requestJoke(){

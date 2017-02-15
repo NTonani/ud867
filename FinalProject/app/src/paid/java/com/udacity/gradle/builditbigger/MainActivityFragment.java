@@ -29,6 +29,7 @@ public class MainActivityFragment extends Fragment implements EndpointsAsyncTask
 
     private Intent mAndroidIntent;
     private Context mContext;
+    private BroadcastReceiver mBroadcastReceiver;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,6 +40,18 @@ public class MainActivityFragment extends Fragment implements EndpointsAsyncTask
         ButterKnife.bind(this,root);
         mSpinner.setVisibility(View.GONE);
 
+        // Create receiver
+        mBroadcastReceiver = new BroadcastReceiver() {
+
+            // Init CoundDownLatch object, load interstitial add, request joke
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Request joke from CGE
+                requestJoke();
+
+            }
+        };
+
         return root;
     }
 
@@ -48,28 +61,18 @@ public class MainActivityFragment extends Fragment implements EndpointsAsyncTask
 
         mContext = getContext();
 
-        // Register new broadcast receiver
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(
-                new BroadcastReceiver() {
-
-                    // Init CoundDownLatch object, load interstitial add, request joke
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        // Request joke from CGE
-                        requestJoke();
-
-                    }
-                }, new IntentFilter(getString(R.string.requesting_joke))
+        // Register receiver
+        LocalBroadcastManager.getInstance(mContext).registerReceiver(
+                mBroadcastReceiver, new IntentFilter(getString(R.string.requesting_joke))
         );
     }
 
     @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-
-        mContext = getContext();
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Unregister receiver
+        LocalBroadcastManager.getInstance(mContext).unregisterReceiver(mBroadcastReceiver);
     }
-
 
     @Override
     public void onTaskComplete(String joke) {

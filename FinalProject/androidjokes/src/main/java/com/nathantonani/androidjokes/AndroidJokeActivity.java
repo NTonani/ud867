@@ -22,6 +22,7 @@ public class AndroidJokeActivity extends AppCompatActivity {
 
         // Set up button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(getString(R.string.android_jokes));
 
         String joke = getIntent().getStringExtra(getString(R.string.joke_extra));
         jokeView.setText(joke);
